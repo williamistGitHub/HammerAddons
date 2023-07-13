@@ -1,0 +1,9 @@
+@PointClass base(ControlEnables)
+    appliesto(srctools)
+= comp_always_visible:
+    "Marks the visleaf this entity is in as always visible. "+
+    "This can help work around certain bugs."
+    [
+
+    @resources []
+    ]
