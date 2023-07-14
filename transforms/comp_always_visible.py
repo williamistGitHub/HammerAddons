@@ -8,7 +8,7 @@ LOGGER = get_logger(__name__)
 @trans('comp_always_visible')
 def comp_always_visible(ctx: Context):
     """
-    comp_always visible marks the visleaf it is in as visible in all other visleafs, so it is always drawn
+    comp_always visible marks the visleaf it is in as visible/audible in all other visleafs, so it is always drawn/heard
     """
 
     for ent in ctx.bsp.ents.by_class['comp_always_visible']:
@@ -26,12 +26,22 @@ def comp_always_visible(ctx: Context):
         index = leaf.cluster_id // 8
         bitmask = 1 << (leaf.cluster_id % 8)
 
-        # set it to be visible from all others
+        # check visiblity and audibility flags
+        flags = int(ent.get('spawnflags', 1))
+        is_visible = (flags & 1) != 0
+        is_audible = (flags & 2) != 0
+
+        LOGGER.debug("Adding to PVS: {}, PAS: {}.", is_visible, is_audible)
+
+        # set it to be visible/audible from all others
         for l in ctx.bsp.vis_tree().iter_leafs():
             if l == leaf or l.cluster_id == -1:
                 continue
 
-            ctx.bsp.visibility.potentially_visible[l.cluster_id][index] |= bitmask
+            if is_visible:
+                ctx.bsp.visibility.potentially_visible[l.cluster_id][index] |= bitmask
+            if is_audible:
+                ctx.bsp.visibility.potentially_audible[l.cluster_id][index] |= bitmask
 
         # remove the entity
         ent.remove()

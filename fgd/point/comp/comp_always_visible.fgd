@@ -1,9 +1,15 @@
 @PointClass base(ControlEnables)
     appliesto(srctools)
 = comp_always_visible:
-    "Marks the visleaf this entity is in as always visible. "+
+    "Marks the visleaf this entity is in as always visible and/or always audible. "+
     "This can help work around certain bugs."
     [
+
+    spawnflags(flags) =
+    [
+        1 : "Add to PVS" : 1
+        2 : "Add to PAS" : 0
+    ]
 
     @resources []
     ]
